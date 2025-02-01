@@ -20,7 +20,7 @@ def train_and_save_model(df, model_name: str):
     save_model(model, model_name)
     return df_with_clusters, model
 
-# 🟢 Funkcja do poprawnego generowania nazwy klastra
+# Funkcja do poprawnego generowania nazwy klastra
 def generate_cluster_name(cluster_df):
     if cluster_df.empty:
         return "Nieokreślona grupa"
@@ -31,7 +31,7 @@ def generate_cluster_name(cluster_df):
 
     return f"Osoby lubiące przebywać {most_common_place} i kochające {most_common_animal}, posiadające {most_common_edu} wykształcenie"
 
-# 🟢 Funkcja do generowania opisu klastra z poprawną gramatyką
+# Funkcja do generowania opisu klastra z poprawną gramatyką
 def generate_cluster_description(cluster_df):
     if cluster_df.empty:
         return "Brak dostępnych informacji o tej grupie."
@@ -73,39 +73,37 @@ with st.sidebar:
     fav_place = st.selectbox("Ulubione miejsce", ['Nad wodą', 'W lesie', 'W górach', 'Inne'])
     gender = st.radio("Płeć", ['Mężczyzna', 'Kobieta'])
 
-# Przycisk do wykonania akcji
-if st.button("Sprawdź klaster"):
-    person_df = prepare_person_df(age, edu_level, fav_animals, fav_place, gender)
-    cluster_prediction = predict_model(model, data=person_df)
-    predicted_cluster_id = cluster_prediction["Cluster"].values[0]
+person_df = prepare_person_df(age, edu_level, fav_animals, fav_place, gender)
+cluster_prediction = predict_model(model, data=person_df)
+predicted_cluster_id = cluster_prediction["Cluster"].values[0]
 
-    # Pobranie użytkowników w danym klastrze
-    same_cluster_df = df_with_clusters[df_with_clusters["Cluster"] == predicted_cluster_id]
+# Pobranie użytkowników w danym klastrze
+same_cluster_df = df_with_clusters[df_with_clusters["Cluster"] == predicted_cluster_id]
 
-    # Generowanie poprawnej nazwy i opisu klastra
-    cluster_name = generate_cluster_name(same_cluster_df)
-    cluster_description = generate_cluster_description(same_cluster_df)
+# Generowanie poprawnej nazwy i opisu klastra
+cluster_name = generate_cluster_name(same_cluster_df)
+cluster_description = generate_cluster_description(same_cluster_df)
 
-    # 🟢 Wyświetlanie wyników
-    st.header(f"Najbliżej Ci do grupy: {cluster_name}")
-    st.markdown(cluster_description)
+# Wyświetlanie wyników
+st.header(f"Najbliżej Ci do grupy: {cluster_name}")
+st.markdown(cluster_description)
 
-    # Liczba osób w tym samym klastrze
-    st.metric("Liczba twoich znajomych", len(same_cluster_df))
+# Liczba osób w tym samym klastrze
+st.metric("Liczba twoich znajomych", len(same_cluster_df))
 
-    # Wizualizacje danych
-    fig = px.histogram(same_cluster_df, x="age", title="Rozkład wieku w grupie")
-    st.plotly_chart(fig)
+# Wizualizacje danych
+fig = px.histogram(same_cluster_df, x="age", title="Rozkład wieku w grupie")
+st.plotly_chart(fig)
 
-    fig = px.histogram(same_cluster_df, x="edu_level", title="Rozkład wykształcenia w grupie")
-    st.plotly_chart(fig)
+fig = px.histogram(same_cluster_df, x="edu_level", title="Rozkład wykształcenia w grupie")
+st.plotly_chart(fig)
 
-    fig = px.histogram(same_cluster_df, x="fav_animals", title="Rozkład ulubionych zwierząt w grupie")
-    st.plotly_chart(fig)
+fig = px.histogram(same_cluster_df, x="fav_animals", title="Rozkład ulubionych zwierząt w grupie")
+st.plotly_chart(fig)
 
-    fig = px.histogram(same_cluster_df, x="fav_place", title="Rozkład ulubionych miejsc w grupie")
-    st.plotly_chart(fig)
+fig = px.histogram(same_cluster_df, x="fav_place", title="Rozkład ulubionych miejsc w grupie")
+st.plotly_chart(fig)
 
-    fig = px.histogram(same_cluster_df, x="gender", title="Rozkład płci w grupie")
-    st.plotly_chart(fig)
+fig = px.histogram(same_cluster_df, x="gender", title="Rozkład płci w grupie")
+st.plotly_chart(fig)
 
